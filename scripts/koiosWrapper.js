@@ -120,9 +120,11 @@ async function fetchWalletTransactions(wallet, startDate, endDate) {
 
       // Ensure it contains both 'Fund' and 'Cohort'
       const metadataString = metadataMsg.join(' ').toLowerCase();
-      if (metadataString.includes('fund') && metadataString.includes('cohort')) {
-        return true;
-      }
+        if (metadataString.includes('fund') && 
+            metadataString.includes('cohort') && 
+            !metadataString.includes('test')) {
+          return true;
+        }
       return false;
     });
 
