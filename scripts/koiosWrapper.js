@@ -71,7 +71,6 @@ function isIncomingTransaction(tx, wallet) {
  * @returns {Promise<Array>} Array of detailed incoming transactions.
  */
 async function fetchWalletTransactions(wallet, startDate, endDate) {
-  // First API call: get the basic tx list (which only includes tx_hash, block_time, etc.)
   const addressTxUrl = "https://api.koios.rest/api/v1/address_txs";
   const basicRequestData = { _addresses: [wallet] };
 
@@ -84,12 +83,11 @@ async function fetchWalletTransactions(wallet, startDate, endDate) {
       }
     });
 
-    const basicTxs = basicResponse.data; // e.g. [{ tx_hash, epoch_no, block_height, block_time }, ...]
+    const basicTxs = basicResponse.data;
     if (!Array.isArray(basicTxs) || basicTxs.length === 0) {
       return [];
     }
 
-    // For each tx_hash, retrieve detailed tx info.
     const detailedTxs = await Promise.all(
       basicTxs.map(async (tx) => {
         try {
@@ -101,20 +99,31 @@ async function fetchWalletTransactions(wallet, startDate, endDate) {
       })
     );
 
-    // Filter out any null responses.
+    // Filter valid transactions
     const validDetailedTxs = detailedTxs.filter(tx => tx !== null);
 
-    // Filter for incoming transactions and apply date filtering.
+    // Filter for incoming transactions and apply metadata filtering
     const incomingTxs = validDetailedTxs.filter(tx => {
-      // Convert tx_timestamp (assumed to be in seconds) to a Date object.
       const txDate = new Date(tx.tx_timestamp * 1000);
 
       // Date filtering.
       if (startDate && txDate < new Date(startDate)) return false;
       if (endDate && txDate > new Date(endDate)) return false;
 
-      // Check for incoming criteria.
-      return isIncomingTransaction(tx, wallet);
+      // Check for incoming transaction
+      const isIncoming = isIncomingTransaction(tx, wallet);
+      if (!isIncoming) return false;
+
+      // **Check metadata for "Fund" and "Cohort"**
+      const metadataMsg = tx?.metadata?.[674]?.msg;
+      if (!metadataMsg || !Array.isArray(metadataMsg)) return false;
+
+      // Ensure it contains both 'Fund' and 'Cohort'
+      const metadataString = metadataMsg.join(' ').toLowerCase();
+      if (metadataString.includes('fund') && metadataString.includes('cohort')) {
+        return true;
+      }
+      return false;
     });
 
     return incomingTxs;
