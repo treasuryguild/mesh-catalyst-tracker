@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import projects from '../config/projects.json';
 import SheetFetcher from '../components/SheetFetcher';
 import TxTester from '../components/TxTester';
+import Charts from '../components/Charts';
 
 interface Project {
   project_id: string;
@@ -140,6 +141,7 @@ export default function Home() {
 
   return (
     <div className="home-container">
+      <Charts />
       <SheetFetcher/>
       <TxTester />
       <h1>Project Dashboard</h1>
