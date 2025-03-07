@@ -13,9 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const data: AddressTxResponse = await getAddressTxs(wallet);
       res.status(200).json(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching address transactions:", error);
-      res.status(500).json({ message: error.message || 'Internal Server Error' });
+      const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+      res.status(500).json({ message: errorMessage });
     }
   } else {
     res.setHeader('Allow', ['POST']);
