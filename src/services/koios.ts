@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 export interface AddressTxResponse {
-  [key: string]: any;
+  [key: string]: string | number | boolean | object | null;
 }
 
 /**
@@ -25,7 +25,7 @@ export async function getAddressTxs(wallet: string): Promise<AddressTxResponse> 
 }
 
 export interface AddressInfoResponse {
-  [key: string]: any;
+  [key: string]: string | number | boolean | object | null;
 }
 
 /**
@@ -46,14 +46,18 @@ export async function getAddressInfo(wallet: string): Promise<AddressInfoRespons
       },
     });
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching address info:", error);
-    throw new Error(error.message);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Unknown error occurred");
+    }
   }
 }
 
 export interface TxInfoResponse {
-  [key: string]: any;
+  [key: string]: string | number | boolean | object | null;
 }
 
 /**
@@ -81,14 +85,18 @@ export async function getTxInfo(txId: string): Promise<TxInfoResponse> {
       },
     });
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching transaction info:", error);
-    throw new Error(error.message);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Unknown error occurred");
+    }
   }
 }
 
 export interface AssetInfoResponse {
-  [key: string]: any;
+  [key: string]: string | number | boolean | object | null;
 }
 
 /**
@@ -109,8 +117,12 @@ export async function getAssetInfo(transformedArray: string[]): Promise<AssetInf
       },
     });
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching asset info:", error);
-    throw new Error(error.message);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Unknown error occurred");
+    }
   }
 }
