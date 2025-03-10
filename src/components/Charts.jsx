@@ -12,9 +12,10 @@ import {
   Title,
   Tooltip,
   Legend,
+  ArcElement, // Import the ArcElement for pie charts
 } from 'chart.js';
 
-// Register Chart.js components
+// Register Chart.js components including the ArcElement
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,8 +24,10 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ArcElement
 );
+
 
 // Helper to convert currency strings like "₳169,413" to numbers.
 const parseCurrency = (value) => parseFloat(value.replace(/[^0-9.]/g, ''));
