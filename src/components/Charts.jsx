@@ -1,6 +1,7 @@
 // components/Charts.js
 import React, { useState, useEffect } from 'react';
-import { Bar, Line } from 'react-chartjs-2';
+import styles from '../styles/charts.module.css';
+import { Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -63,8 +64,7 @@ export default function ChartsFetched() {
     return <div>Loading charts...</div>;
   }
 
-  // --- Proposals Chart Data ---
-  // Extract proposals labels and values by stripping out the currency symbols.
+  // --- Proposals Chart Data (Bar Chart with Horizontal Bars) ---
   const proposalLabels = proposalsData.map((item) => item['Title']);
   const budgetData = proposalsData.map((item) => parseCurrency(item['Budget']));
   const fundsDistributedData = proposalsData.map((item) =>
@@ -95,71 +95,115 @@ export default function ChartsFetched() {
     ],
   };
 
-  // --- Milestones Chart Data ---
-  // For the milestones chart, we’ll filter the data for one project (e.g. Project ID "1000107")
-  const projectMilestones = milestonesData.filter(
-    (item) => item['Project ID'] === "1000107"
+  // --- Funds Pie Chart Data ---
+  const totalFundsDistributed = fundsDistributedData.reduce(
+    (sum, curr) => sum + curr,
+    0
+  );
+  const totalRemainingFunds = remainingFundsData.reduce(
+    (sum, curr) => sum + curr,
+    0
   );
 
-  // Sort milestones by the Milestone number (assuming numeric order)
-  projectMilestones.sort((a, b) => Number(a.Milestone) - Number(b.Milestone));
-
-  const milestoneLabels = projectMilestones.map(
-    (item) => `Milestone ${item.Milestone}`
-  );
-  const completionData = projectMilestones.map((item) =>
-    Number(item.Completion)
-  );
-
-  const milestonesChartData = {
-    labels: milestoneLabels,
+  const fundsPieChartData = {
+    labels: ['Funds Distributed', 'Remaining Funds'],
     datasets: [
       {
-        label: 'Completion',
-        data: completionData,
-        fill: false,
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        tension: 0.1,
+        data: [totalFundsDistributed, totalRemainingFunds],
+        backgroundColor: [
+          'rgba(153, 102, 255, 0.6)',
+          'rgba(255, 159, 64, 0.6)',
+        ],
+      },
+    ],
+  };
+
+  // --- Milestone Approvals Pie Chart Data ---
+  let approvedCount = 0;
+  let notApprovedCount = 0;
+  milestonesData.forEach((milestone) => {
+    Object.keys(milestone).forEach((key) => {
+      if (key.endsWith('Approved')) {
+        if (milestone[key] === 'TRUE') {
+          approvedCount++;
+        } else {
+          notApprovedCount++;
+        }
+      }
+    });
+  });
+
+  const approvalsPieChartData = {
+    labels: ['Approved', 'Not Approved'],
+    datasets: [
+      {
+        data: [approvedCount, notApprovedCount],
+        backgroundColor: [
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(255, 99, 132, 0.6)',
+        ],
       },
     ],
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Proposals Overview</h2>
-      <Bar
-        data={proposalsChartData}
-        options={{
-          responsive: true,
-          plugins: {
-            legend: { position: 'top' },
-            title: {
-              display: true,
-              text: 'Proposal Budgets vs. Funds Distributed vs. Remaining Funds',
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Proposals Overview</h2>
+      <div className={styles.chartSection}>
+        <Bar
+          data={proposalsChartData}
+          options={{
+            indexAxis: 'y', // Makes the bar chart horizontal
+            responsive: true,
+            plugins: {
+              legend: { position: 'top' },
+              title: {
+                display: true,
+                text: 'Proposal Budgets vs. Funds Distributed vs. Remaining Funds',
+              },
             },
-          },
-          scales: {
-            x: {
-              ticks: { autoSkip: false, maxRotation: 90, minRotation: 45 },
+            scales: {
+              x: {
+                ticks: { autoSkip: false },
+              },
             },
-          },
-        }}
-      />
+          }}
+        />
+      </div>
 
-      <h2 className="text-2xl font-bold my-8">
-        Milestones Completion (Project: MeshJS SDK Operations)
-      </h2>
-      <Line
-        data={milestonesChartData}
-        options={{
-          responsive: true,
-          plugins: {
-            legend: { position: 'top' },
-            title: { display: true, text: 'Milestone Completion Progress' },
-          },
-        }}
-      />
+      <h2 className={styles.heading}>Pie Chart Overview</h2>
+      <div className={styles.pieChartsWrapper}>
+        <div className={styles.pieChartContainer}>
+          <Pie
+            data={fundsPieChartData}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: { position: 'top' },
+                title: {
+                  display: true,
+                  text: 'Total Funds: Distributed vs. Remaining',
+                },
+              },
+            }}
+          />
+        </div>
+        <div className={styles.pieChartContainer}>
+          <Pie
+            data={approvalsPieChartData}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: { position: 'top' },
+                title: {
+                  display: true,
+                  text: 'Milestone Approvals: Approved vs. Not Approved',
+                },
+              },
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 }

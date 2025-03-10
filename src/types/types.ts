@@ -1,4 +1,4 @@
-// global.d.ts
+// ../types/types.ts
 
 // Type for a single transaction item in txData
 export interface TxDataItem {

@@ -1,0 +1,27 @@
+/* styles/charts.module.css */
+.container {
+  padding: 16px;
+}
+
+.heading {
+  font-size: 1.5rem; /* equivalent to text-2xl */
+  font-weight: bold;
+  margin: 24px 0 16px;
+  text-align: center;
+}
+
+.chartSection {
+  margin-bottom: 32px;
+}
+
+.pieChartsWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.pieChartContainer {
+  width: 300px;
+  height: 300px;
+}
