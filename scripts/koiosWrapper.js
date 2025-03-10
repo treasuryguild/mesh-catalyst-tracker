@@ -1,6 +1,58 @@
 const axios = require('axios');
 
 /**
+ * Checks whether a transaction is recent enough (i.e. within the last 8 hours and 10 minutes).
+ * @param {number} txTimestamp - The transaction timestamp (in seconds).
+ * @returns {boolean} True if the transaction is recent.
+ */
+function isRecentTransaction(txTimestamp) {
+  // Convert txTimestamp to milliseconds.
+  const txTimeMs = txTimestamp * 1000;
+  // Calculate cutoff: 8 hours and 10 minutes ago.
+  const cutoffMs = Date.now() - ((8 * 60 + 10) * 60 * 1000);
+  // Only transactions with a timestamp strictly greater than the cutoff are considered recent.
+  return txTimeMs > cutoffMs;
+}
+
+/**
+ * Sends a Discord notification with details about the recent transactions.
+ * @param {Array} txs - Array of recent transaction objects.
+ */
+async function sendDiscordNotification(txs) {
+  // Get your Discord webhook URL from environment variables.
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.error("Discord webhook URL is not configured.");
+    return;
+  }
+
+  // Create a message payload.
+  // This example builds a simple text message listing transaction hash and formatted date.
+  let message = `**Recent Transaction Notification**\nReceived ${txs.length} recent transaction(s):`;
+  txs.forEach((tx, index) => {
+    const txDate = new Date(tx.tx_timestamp * 1000).toLocaleString();
+    message += `\n\n**Transaction ${index + 1}:**\nHash: \`${tx.tx_hash}\`\nDate: ${txDate}`;
+  });
+
+  // Prepare the payload for Discord webhook.
+  const payload = {
+    content: message,
+  };
+
+  try {
+    // Post the payload to the Discord webhook.
+    await axios.post(webhookUrl, payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log("Discord notification sent successfully.");
+  } catch (error) {
+    console.error("Failed to send Discord notification:", error);
+  }
+}
+
+/**
  * Retrieves detailed transaction information for a given transaction hash.
  * Uses the tx_info endpoint with extensive parameters.
  *
@@ -127,6 +179,13 @@ async function fetchWalletTransactions(wallet, startDate, endDate) {
         }
       return false;
     });
+
+    const recentTxs = incomingTxs.filter(tx => isRecentTransaction(tx.tx_timestamp));
+
+    if (recentTxs.length > 0) {
+      // Send a message to Discord.
+      sendDiscordNotification(recentTxs);
+    }
 
     return incomingTxs;
   } catch (error) {

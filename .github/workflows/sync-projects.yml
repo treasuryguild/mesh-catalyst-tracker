@@ -16,6 +16,7 @@ jobs:
       NEXT_PUBLIC_PROJECT_CONFIGS: ${{ secrets.NEXT_PUBLIC_PROJECT_CONFIGS }}
       KOIOS_API_KEY: ${{ secrets.KOIOS_API_KEY }}
       PROJECT_IDS: ${{ secrets.PROJECT_IDS }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v2
       
