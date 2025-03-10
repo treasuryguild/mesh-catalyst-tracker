@@ -6,11 +6,6 @@ import SheetFetcher from '../components/SheetFetcher';
 import TxTester from '../components/TxTester';
 import Charts from '../components/Charts';
 
-// The global file provides the following types:
-// - TxDataItem: a single transaction item (from txData)
-// - ProjectTxData: grouping a project's transactions
-// - TxInfoData: detailed transaction info
-
 // Local type for our project configuration.
 interface Project {
   project_id: string;
@@ -118,7 +113,6 @@ export default function Testing() {
       }
 
       const txInfoData = await response.json();
-      // Cast the response to the global TxInfoData type.
       console.log('txInfoData', txInfoData);
       const txInfoObj = Array.isArray(txInfoData)
         ? (txInfoData[0] as TxInfoData)
@@ -128,7 +122,6 @@ export default function Testing() {
       const wallet = projects.projects[0].wallet_address;
 
       // Filter outputs for the wallet address.
-      // The global UTxO type ensures payment_addr has a bech32 property.
       const outputsForWallet = txInfoObj.outputs.filter(
         (output) => output.payment_addr.bech32 === wallet
       );
