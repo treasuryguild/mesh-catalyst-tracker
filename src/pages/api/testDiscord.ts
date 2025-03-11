@@ -8,8 +8,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).end('Method Not Allowed');
   }
   
-  // Expect the wallet address, optional date filters, and transaction data in the request body.
-  const { wallet, transactions } = req.body;
+  // Expect the wallet address, transaction data, and proposal details in the request body
+  const { wallet, transactions, proposal } = req.body;
   
   if (!wallet) {
     return res.status(400).json({ error: 'Wallet parameter is required.' });
@@ -19,16 +19,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'Transaction data is required and should be an array.' });
   }
   
+  if (!proposal) {
+    return res.status(400).json({ error: 'Proposal data is required.' });
+  }
+  
   try {
-    // Send the provided transaction data via Discord.
-    await sendDiscordNotification(transactions, wallet);
+    // Send the provided transaction data via Discord with proposal details
+    await sendDiscordNotification(transactions, wallet, proposal);
     
     return res.status(200).json({
-      message: 'Discord notification triggered with provided transactions.',
-      transactions
+      message: 'Discord notification triggered with provided transactions and proposal details.',
+      transactions,
+      proposal
     });
   } catch (error) {
     console.error('Error in testDiscord endpoint:', error);
-    return res.status(500).json({ error: 'Failed to send Discord notification.' });
+    return res.status(500).json({ 
+      error: error instanceof Error ? error.message : 'Failed to send Discord notification.' 
+    });
   }
 }

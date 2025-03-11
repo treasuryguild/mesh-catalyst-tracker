@@ -266,7 +266,7 @@ async function processProject(projectId) {
     
     if (wallet) {
       console.log(`Fetching transactions for wallet ${wallet} between ${fromDate || 'beginning'} and ${toDate || 'now'}`);
-      const walletTxs = await fetchWalletTransactions(wallet, fromDate, toDate);
+      const walletTxs = await fetchWalletTransactions(wallet, fromDate, toDate, proposalDetails);
       console.log(`Found ${walletTxs.length} transactions for wallet ${wallet}`);
       if (walletTxs.length > 0) {
         const formattedTxs = walletTxs.map(tx => ({

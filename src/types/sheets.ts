@@ -1,4 +1,4 @@
-// ../types/sheets.ts
+// types/sheets.ts
 
 export interface Milestone {
   Title: string;
@@ -18,17 +18,30 @@ export interface Milestone {
   "Total Budget"?: string;
 }
 
+// Define the API response structure
 export interface Proposal {
-  Budget: string;
-  "Collaborator Allocation": string;
-  "Funds Distributed": string;
-  "Mesh Allocation": string;
-  "Mesh Remaining": string;
-  "Milestone Quantity": string;
-  "Milestones Link": string;
   "Project ID": string;
-  "Remaining Funds": string;
   Title: string;
+  Budget: string;
+  "Funds Distributed": string;
+  "Remaining Funds": string;
+  Milestones?: string;
+  "Milestones Link"?: string;
+  "Collaborator Allocation"?: string;
+  "Mesh Allocation"?: string;
+  "Mesh Remaining"?: string;
+  "Milestone Quantity"?: string;
+}
+
+// Define the internal structure used by the component
+export interface ProposalData {
+  project_id: string;
+  title: string;
+  budget: string;
+  funds_distributed: string;
+  remaining_funds: string;
+  milestones_qty?: string;
+  milestones_link?: string;
 }
 
 export interface WalletTransaction {
@@ -52,8 +65,12 @@ export interface CollaboratorAllocation {
   Title: string;
 }
 
+// API response format
 export interface ConfigItem {
   "Configuration Key": string;
   Description: string;
   Value: string;
 }
+
+// Internal format used in the component
+export type ConfigItemArray = [string, string, string?]; // [key, value, description?]

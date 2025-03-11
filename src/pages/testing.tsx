@@ -5,6 +5,7 @@ import { TxInfoData, ProjectTxData } from '../types/types'; // Adjust the import
 import SheetFetcher from '../components/SheetFetcher';
 import TxTester from '../components/TxTester';
 import Charts from '../components/Charts';
+import DiscordMessageTester from '@/components/DiscordMessageTester';
 
 // Local type for our project configuration.
 interface Project {
@@ -140,6 +141,7 @@ export default function Testing() {
       <Charts />
       <SheetFetcher />
       <TxTester />
+      <DiscordMessageTester />
       <h1>Project Dashboard</h1>
       <hr />
 

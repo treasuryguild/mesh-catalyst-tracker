@@ -1,3 +1,4 @@
+// ../components/TxTester.jsx
 import React, { useState } from 'react';
 
 const TransactionTester = () => {
@@ -5,7 +6,6 @@ const TransactionTester = () => {
   const [endDate, setEndDate] = useState('');
   const [loading, setLoading] = useState(false);
   const [txResults, setTxResults] = useState(null);
-  const [discordStatus, setDiscordStatus] = useState('');
 
   // Hardcoded wallet address from env variable.
   const WALLET_ADDRESS = process.env.NEXT_PUBLIC_TEST_WALLET;
@@ -124,46 +124,6 @@ const TransactionTester = () => {
     }
   };
 
-  // Handler to trigger a Discord notification using the transaction data.
-  const handleDiscordTest = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setDiscordStatus('Sending Discord notification...');
-    try {
-      // Use the transactions already fetched (if available), else fetch them.
-      let transactions = txResults;
-      console.log('Sending Discord notification with transactions:', transactions);
-      if (!transactions) {
-        transactions = await fetchWalletTransactions(
-          WALLET_ADDRESS,
-          startDate,
-          endDate
-        );
-        setTxResults(transactions);
-      }
-      // Send the transactions along with other parameters to the API.
-      const response = await fetch('/api/testDiscord', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          wallet: WALLET_ADDRESS,
-          transactions
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setDiscordStatus('Discord notification sent successfully.');
-      } else {
-        setDiscordStatus(`Error: ${data.error}`);
-      }
-    } catch (error) {
-      console.error('Error sending Discord notification:', error);
-      setDiscordStatus('Error sending Discord notification.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div style={{ maxWidth: '600px', margin: '20px auto', padding: '20px' }}>
       <h2>Transaction Tester</h2>
@@ -227,24 +187,6 @@ const TransactionTester = () => {
           {loading ? 'Fetching Transactions...' : 'Fetch Transactions'}
         </button>
       </form>
-      <button
-        onClick={handleDiscordTest}
-        disabled={loading}
-        style={{
-          marginTop: '20px',
-          padding: '10px',
-          backgroundColor: loading ? '#ccc' : '#28a745',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-        }}
-      >
-        {loading
-          ? 'Sending Discord Notification...'
-          : 'Send Discord Notification'}
-      </button>
-      {discordStatus && <p>{discordStatus}</p>}
       {txResults && (
         <div>
           <h3>Transaction Results:</h3>
