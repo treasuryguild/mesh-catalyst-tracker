@@ -70,7 +70,7 @@ function isIncomingTransaction(tx, wallet) {
  * @param {string} [endDate] - ISO date string for the end date.
  * @returns {Promise<Array>} Array of detailed incoming transactions.
  */
-async function fetchWalletTransactions(wallet, startDate, endDate, proposalDetails = null) {
+export async function fetchWalletTransactions(wallet, startDate, endDate, proposalDetails = null) {
   const addressTxUrl = "https://api.koios.rest/api/v1/address_txs";
   const basicRequestData = { _addresses: [wallet] };
 
@@ -142,6 +142,3 @@ async function fetchWalletTransactions(wallet, startDate, endDate, proposalDetai
   }
 }
 
-module.exports = {
-  fetchWalletTransactions
-};
