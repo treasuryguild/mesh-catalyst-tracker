@@ -1,6 +1,7 @@
 // scripts/sync-projects.js
-const { createClient } = require('@supabase/supabase-js');
-const axios = require('axios');
+import { createClient } from '@supabase/supabase-js';
+import axios from 'axios';
+import { fetchWalletTransactions } from './koiosWrapper'
 
 // Initialize constants
 const MILESTONES_BASE_URL = process.env.NEXT_PUBLIC_MILESTONES_URL || 'https://milestones.projectcatalyst.io';
@@ -185,11 +186,6 @@ async function getProposalDetails(projectId) {
   console.log(`Found proposal details for project ${projectId}:`, data);
   return data;
 }
-
-// ----------------------
-// Koios Service Wrapper
-// ----------------------
-const { fetchWalletTransactions } = require('./koiosWrapper');
 
 /**
  * Processes a single project.

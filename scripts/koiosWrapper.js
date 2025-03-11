@@ -1,6 +1,5 @@
-const axios = require('axios');
-const { isRecentTransaction, sendDiscordNotification } = require('../src/utils/discordNotifier');
-
+import axios from 'axios';
+import { isRecentTransaction, sendDiscordNotification } from '../src/utils/discordNotifier'
 /**
  * Retrieves detailed transaction information for a given transaction hash.
  * Uses the tx_info endpoint with extensive parameters.
