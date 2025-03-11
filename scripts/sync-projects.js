@@ -1,7 +1,7 @@
 // scripts/sync-projects.js
 import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
-import { fetchWalletTransactions } from './koiosWrapper'
+import { fetchWalletTransactions } from './koiosWrapper.js';
 
 // Initialize constants
 const MILESTONES_BASE_URL = process.env.NEXT_PUBLIC_MILESTONES_URL || 'https://milestones.projectcatalyst.io';

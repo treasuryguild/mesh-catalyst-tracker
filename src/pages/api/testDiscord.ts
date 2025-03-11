@@ -1,6 +1,6 @@
 // pages/api/testDiscord.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { sendDiscordNotification } from '../../utils/discordNotifier';
+import { sendDiscordNotification } from '../../utils/discordNotifier.js';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { isRecentTransaction, sendDiscordNotification } from '../src/utils/discordNotifier'
+import { isRecentTransaction, sendDiscordNotification } from '../src/utils/discordNotifier.js'
 /**
  * Retrieves detailed transaction information for a given transaction hash.
  * Uses the tx_info endpoint with extensive parameters.
