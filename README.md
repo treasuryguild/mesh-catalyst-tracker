@@ -12,6 +12,7 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
 | **Fund 10** | | | |
 | MeshJS SDK Operations: Supporting Open-Source Library Development, Developer Resources & Builder Community | 1000107 | `████████████████····` 80% | `████████████████····` 80% |
 | | | | |
+| | | | |
 | **Fund 11** | | | |
 | Sustain & Maintain MeshJS | 1100271 | `████████████████████` 100% | `████████████████████` 100% |
 | | | | |
