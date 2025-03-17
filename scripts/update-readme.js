@@ -177,35 +177,59 @@ ${project.finished ? `| **Finished** | ${project.finished} |` : ''}
 function generateSummaryTable(projects) {
     let summaryMarkdown = `## Overview of All Proposals
 
-| Project | Milestones | Funding |
-|:--------|:-----------|:--------|
+| Project | ID | Milestones | Funding |
+|:--------|:---|:-----------|:--------|
 `;
 
-    // Sort projects by fund number
+    // Sort projects by fund number and group them
     const sortedProjects = projects.flat().sort((a, b) => {
         const fundA = a.projectDetails.category.match(/Fund (\d+)/)?.[1] || '0';
         const fundB = b.projectDetails.category.match(/Fund (\d+)/)?.[1] || '0';
         return Number(fundA) - Number(fundB);
     });
 
-    for (const project of sortedProjects) {
-        const { projectDetails, milestonesCompleted } = project;
+    // Group projects by fund
+    const groupedProjects = {};
+    sortedProjects.forEach(project => {
+        const fundMatch = project.projectDetails.category.match(/Fund (\d+)/);
+        const fundNumber = fundMatch ? fundMatch[1] : 'Other';
+        if (!groupedProjects[fundNumber]) {
+            groupedProjects[fundNumber] = [];
+        }
+        groupedProjects[fundNumber].push(project);
+    });
 
-        // Calculate milestone progress
-        const milestonePercentComplete = Math.round((milestonesCompleted / projectDetails.milestones_qty) * 100);
-        const milestoneFilled = Math.round(milestonePercentComplete / 5);
-        const milestoneEmpty = 20 - milestoneFilled;
-        const milestoneBar = '█'.repeat(milestoneFilled) + '·'.repeat(milestoneEmpty);
+    // Add projects fund by fund with headers
+    Object.keys(groupedProjects)
+        .sort((a, b) => Number(a) - Number(b))
+        .forEach(fundNumber => {
+            // Add fund header row
+            summaryMarkdown += `| **Fund ${fundNumber}** | | | |\n`;
 
-        // Calculate funding progress
-        const fundsDistributed = projectDetails.funds_distributed || 0;
-        const fundPercentComplete = Math.round((fundsDistributed / projectDetails.budget) * 100);
-        const fundFilled = Math.round(fundPercentComplete / 5);
-        const fundEmpty = 20 - fundFilled;
-        const fundBar = '█'.repeat(fundFilled) + '·'.repeat(fundEmpty);
+            // Add projects for this fund
+            groupedProjects[fundNumber].forEach(project => {
+                const { projectDetails, milestonesCompleted } = project;
 
-        summaryMarkdown += `| ${projectDetails.name} | \`${milestoneBar}\` ${milestonePercentComplete}% | \`${fundBar}\` ${fundPercentComplete}% |\n`;
-    }
+                // Calculate milestone progress
+                const milestonePercentComplete = Math.round((milestonesCompleted / projectDetails.milestones_qty) * 100);
+                const milestoneFilled = Math.round(milestonePercentComplete / 5);
+                const milestoneEmpty = 20 - milestoneFilled;
+                const milestoneBar = '█'.repeat(milestoneFilled) + '·'.repeat(milestoneEmpty);
+
+                // Calculate funding progress
+                const fundsDistributed = projectDetails.funds_distributed || 0;
+                const fundPercentComplete = Math.round((fundsDistributed / projectDetails.budget) * 100);
+                const fundFilled = Math.round(fundPercentComplete / 5);
+                const fundEmpty = 20 - fundFilled;
+                const fundBar = '█'.repeat(fundFilled) + '·'.repeat(fundEmpty);
+
+                // Add project row
+                summaryMarkdown += `| ${projectDetails.name} | ${projectDetails.project_id} | \`${milestoneBar}\` ${milestonePercentComplete}% | \`${fundBar}\` ${fundPercentComplete}% |\n`;
+            });
+
+            // Add a blank row after each fund section for better readability
+            summaryMarkdown += `| | | | |\n`;
+        });
 
     return summaryMarkdown + '\n';
 }
