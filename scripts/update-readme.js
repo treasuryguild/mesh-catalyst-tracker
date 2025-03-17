@@ -200,10 +200,10 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
 
     // Add data source information to README
     if (USE_REAL_DATA) {
-        markdownContent += `> **Data Source**: Real-time data from Supabase\n`;
+        markdownContent += `> **Data Source**: Real data from Catalyst\n`;
         markdownContent += `> **Last Updated**: ${timestamp}\n\n`;
     } else {
-        markdownContent += `> **Data Source**: Mock data (Supabase credentials not available)\n`;
+        markdownContent += `> **Data Source**: Mock data (Credentials not available)\n`;
         markdownContent += `> **Last Generated**: ${timestamp}\n\n`;
     }
 
