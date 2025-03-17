@@ -11,22 +11,18 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
 |:--------|:---|:-----------|:--------|
 | **Fund 10** | | | |
 | MeshJS SDK Operations: Supporting Open-Source Library Development, Developer Resources & Builder Community | 1000107 | `████████████████····` 80% | `████████████████····` 80% |
-| | | | |
 | **Fund 11** | | | |
 | Sustain & Maintain MeshJS | 1100271 | `████████████████████` 100% | `████████████████████` 100% |
-| | | | |
 | **Fund 12** | | | |
 | Mesh Software as a Service | 1200148 | `████················` 20% | `███████·············` 36% |
 | Mesh New Features to Improve Developer experience and Cardano Adoption | 1200147 | `████████████████····` 80% | `█████████████████···` 85% |
 | Sustain and Maintain Mesh SDK | 1200220 | `████████████████████` 100% | `████████████████████` 100% |
-| | | | |
 | **Fund 13** | | | |
 | Mesh: Hydra Tools for administrating & interacting with Hydra Heads | 1300135 | `████████············` 40% | `███████·············` 36% |
 | Mesh: Cquisitor - Transaction Investigation Tool | 1300134 | `····················` 0% | `███·················` 16% |
 | Maintain Mesh and Build Developer Community | 1300130 | `████················` 20% | `███████·············` 36% |
 | Cardano Multisig Platform by Mesh, Clarity DAO & Fluid Tokens | 1300050 | `███·················` 17% | `██████··············` 31% |
 | Cardano Builder Fest Asia by Mesh, Socious, SIDAN, Vietnam Cardano | 1300036 | `██████████··········` 50% | `███████████·········` 54% |
-| | | | |
 
 
 # Fund 10
