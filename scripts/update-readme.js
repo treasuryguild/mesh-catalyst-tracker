@@ -172,6 +172,45 @@ ${project.finished ? `| **Finished** | ${project.finished} |` : ''}
 }
 
 /**
+ * Generates a summary table with progress bars for all proposals.
+ */
+function generateSummaryTable(projects) {
+    let summaryMarkdown = `## Overview of All Proposals
+
+| Project | Milestones | Funding |
+|:--------|:-----------|:--------|
+`;
+
+    // Sort projects by fund number
+    const sortedProjects = projects.flat().sort((a, b) => {
+        const fundA = a.projectDetails.category.match(/Fund (\d+)/)?.[1] || '0';
+        const fundB = b.projectDetails.category.match(/Fund (\d+)/)?.[1] || '0';
+        return Number(fundA) - Number(fundB);
+    });
+
+    for (const project of sortedProjects) {
+        const { projectDetails, milestonesCompleted } = project;
+
+        // Calculate milestone progress
+        const milestonePercentComplete = Math.round((milestonesCompleted / projectDetails.milestones_qty) * 100);
+        const milestoneFilled = Math.round(milestonePercentComplete / 5);
+        const milestoneEmpty = 20 - milestoneFilled;
+        const milestoneBar = '█'.repeat(milestoneFilled) + '·'.repeat(milestoneEmpty);
+
+        // Calculate funding progress
+        const fundsDistributed = projectDetails.funds_distributed || 0;
+        const fundPercentComplete = Math.round((fundsDistributed / projectDetails.budget) * 100);
+        const fundFilled = Math.round(fundPercentComplete / 5);
+        const fundEmpty = 20 - fundFilled;
+        const fundBar = '█'.repeat(fundFilled) + '·'.repeat(fundEmpty);
+
+        summaryMarkdown += `| ${projectDetails.name} | \`${milestoneBar}\` ${milestonePercentComplete}% | \`${fundBar}\` ${fundPercentComplete}% |\n`;
+    }
+
+    return summaryMarkdown + '\n';
+}
+
+/**
  * Generate the complete README markdown.
  */
 async function generateReadme() {
@@ -268,6 +307,9 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
             });
         }
     }
+
+    // Add summary table at the top
+    markdownContent += generateSummaryTable(Object.values(projectsByFund));
 
     // Add project tables grouped by fund
     for (const fund in projectsByFund) {
