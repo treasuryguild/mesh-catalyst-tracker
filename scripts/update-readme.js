@@ -3,8 +3,7 @@ import { PROJECTS_INFO } from './mockData.js';
 
 // Initialize constants
 const MILESTONES_BASE_URL = process.env.NEXT_PUBLIC_MILESTONES_URL || 'https://milestones.projectcatalyst.io';
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_REPO = 'Andre-Diamond/test';
+// We don't need these GitHub-related constants anymore since we're writing locally
 
 // Get project IDs from environment variable
 const README_PROJECT_IDS = process.env.README_PROJECT_IDS;
@@ -285,51 +284,17 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
 }
 
 /**
- * Commits the README to GitHub.
+ * Writes the README to the local filesystem.
  */
 async function commitToGithub(content) {
-    if (!GITHUB_TOKEN) {
-        console.warn('GITHUB_TOKEN environment variable not found. Cannot commit to GitHub.');
-        return false;
-    }
-
     try {
-        // First, get the current README.md (if it exists)
-        let sha;
-        try {
-            const getFileResponse = await axios({
-                method: 'GET',
-                url: `https://api.github.com/repos/${GITHUB_REPO}/contents/README.md`,
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            sha = getFileResponse.data.sha;
-        } catch (error) {
-            console.log('README.md does not exist yet or could not be retrieved:', error.message);
-        }
-
-        // Now create or update the file
-        const response = await axios({
-            method: 'PUT',
-            url: `https://api.github.com/repos/${GITHUB_REPO}/contents/README.md`,
-            headers: {
-                'Authorization': `token ${GITHUB_TOKEN}`,
-                'Accept': 'application/vnd.github.v3+json',
-                'Content-Type': 'application/json'
-            },
-            data: {
-                message: 'Update MeshJS Catalyst Projects README',
-                content: Buffer.from(content).toString('base64'),
-                sha: sha // Include sha if updating, omit if creating
-            }
-        });
-
-        console.log('Successfully committed README.md to GitHub:', response.data.commit.html_url);
+        // Use Node.js fs module to write the file
+        const fs = await import('fs');
+        fs.default.writeFileSync('README.md', content);
+        console.log('Successfully wrote README.md to local filesystem');
         return true;
     } catch (error) {
-        console.error('Error committing to GitHub:', error.response?.data || error.message);
+        console.error('Error writing README.md to local filesystem:', error);
         return false;
     }
 }
@@ -343,15 +308,15 @@ async function main() {
 
     const markdownContent = await generateReadme();
 
-    // No longer writing to local file, only to GitHub
+    // Write README to local filesystem
     console.log('README markdown generated');
+    const success = await commitToGithub(markdownContent);
 
-    // Commit to GitHub
-    if (GITHUB_TOKEN) {
-        console.log('Committing to GitHub...');
-        await commitToGithub(markdownContent);
+    if (success) {
+        console.log('README.md has been updated locally.');
+        console.log('In GitHub Actions, the changes will be visible in the repository.');
     } else {
-        console.warn('GITHUB_TOKEN environment variable not found. Cannot commit to GitHub.');
+        console.warn('Failed to update README.md locally.');
     }
 }
 

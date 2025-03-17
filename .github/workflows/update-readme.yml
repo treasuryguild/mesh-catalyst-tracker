@@ -7,6 +7,9 @@ on:
 
 permissions:
   contents: write
+  # More explicit permissions:
+  issues: read
+  pull-requests: read
 
 jobs:
   update-readme:
@@ -20,7 +23,10 @@ jobs:
       
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
       
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -31,4 +37,11 @@ jobs:
         run: npm ci
         
       - name: Update README
-        run: npm run update-readme 
+        run: npm run update-readme
+        
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add README.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update MeshJS Catalyst Projects README" && git push) 
