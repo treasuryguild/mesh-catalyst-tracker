@@ -227,9 +227,6 @@ function generateSummaryTable(projects) {
                 // Add project row
                 summaryMarkdown += `| ${projectDetails.name} | ${projectDetails.project_id} | \`${milestoneBar}\` ${milestonePercentComplete}% | \`${fundBar}\` ${fundPercentComplete}% |\n`;
             });
-
-            // Add a blank row after each fund section for better readability
-            summaryMarkdown += `| | | | |\n`;
         });
 
     return summaryMarkdown + '\n';
