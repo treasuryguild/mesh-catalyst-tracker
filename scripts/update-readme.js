@@ -183,17 +183,17 @@ function generateSummaryTable(projects) {
 
     // Sort projects by fund number and group them
     const sortedProjects = projects.flat().sort((a, b) => {
-        // Extract fund number from project ID (first two digits)
-        const fundA = a.projectDetails.project_id.substring(0, 2);
-        const fundB = b.projectDetails.project_id.substring(0, 2);
+        // Extract fund number from project ID (first two digits) - ensure it's a string
+        const fundA = String(a.projectDetails.project_id).substring(0, 2);
+        const fundB = String(b.projectDetails.project_id).substring(0, 2);
         return Number(fundA) - Number(fundB);
     });
 
     // Group projects by fund
     const groupedProjects = {};
     sortedProjects.forEach(project => {
-        // Get fund number from project ID (first two digits)
-        const fundNumber = project.projectDetails.project_id.substring(0, 2);
+        // Get fund number from project ID (first two digits) - ensure it's a string
+        const fundNumber = String(project.projectDetails.project_id).substring(0, 2);
         if (!groupedProjects[fundNumber]) {
             groupedProjects[fundNumber] = [];
         }
@@ -205,8 +205,7 @@ function generateSummaryTable(projects) {
         .sort((a, b) => Number(a) - Number(b))
         .forEach(fundNumber => {
             // Add fund header row (convert 10, 11, 12, 13 to Fund 10, Fund 11, etc.)
-            summaryMarkdown += `| **Fund ${Number(fundNumber)}** |||||\n`;
-            summaryMarkdown += `|:--|:--|:--|:--|\n`;
+            summaryMarkdown += `| **Fund ${Number(fundNumber)}** | | | |\n`;
 
             // Add projects for this fund
             groupedProjects[fundNumber].forEach(project => {
