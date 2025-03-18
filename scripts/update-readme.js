@@ -291,21 +291,7 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
                 milestone => milestone.som_signoff_count > 0 && milestone.poa_signoff_count > 0
             ).length;
 
-            // Use the switch case as fallback for specific projects if needed
-            if (milestonesCompleted === 0) {
-                switch (projectId) {
-                    case '1000107': milestonesCompleted = 5; break;
-                    case '1100271': milestonesCompleted = 5; break;
-                    case '1200148': milestonesCompleted = 2; break;
-                    case '1200220': milestonesCompleted = 5; break;
-                    case '1200147': milestonesCompleted = 4; break;
-                    case '1300036': milestonesCompleted = 2; break;
-                    case '1300134': milestonesCompleted = 0; break;
-                    case '1300135': milestonesCompleted = 2; break;
-                    case '1300050': milestonesCompleted = 1; break;
-                    case '1300130': milestonesCompleted = 1; break;
-                }
-            }
+            // No fallbacks - use only real data
         } else {
             // If no real data, use the mock data
             const mockProject = PROJECTS_INFO.find(p => p.id === projectId);
@@ -343,9 +329,7 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
     const overallMilestoneBar = '█'.repeat(overallMilestoneFilled) + '·'.repeat(overallMilestoneEmpty);
 
     // Add overall milestone progress to the markdown
-    markdownContent += `## Overall Milestone Progress
-    
-Total milestones completed: ${totalCompletedMilestones}/${totalMilestones} (${overallMilestonePercentComplete}%)
+    markdownContent += `Total milestones completed: ${totalCompletedMilestones}/${totalMilestones} (${overallMilestonePercentComplete}%)
 
 \`${overallMilestoneBar}\` ${overallMilestonePercentComplete}%
 
