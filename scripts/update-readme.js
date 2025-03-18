@@ -200,13 +200,10 @@ function generateSummaryTable(projects) {
         groupedProjects[fundNumber].push(project);
     });
 
-    // Add projects fund by fund with headers
+    // Add projects fund by fund
     Object.keys(groupedProjects)
         .sort((a, b) => Number(a) - Number(b))
         .forEach(fundNumber => {
-            // Add fund header row (convert 10, 11, 12, 13 to Fund 10, Fund 11, etc.)
-            summaryMarkdown += `| **Fund ${Number(fundNumber)}** | | | |\n`;
-
             // Add projects for this fund
             groupedProjects[fundNumber].forEach(project => {
                 const { projectDetails, milestonesCompleted } = project;
@@ -224,8 +221,8 @@ function generateSummaryTable(projects) {
                 const fundEmpty = 20 - fundFilled;
                 const fundBar = '█'.repeat(fundFilled) + '·'.repeat(fundEmpty);
 
-                // Add project row
-                summaryMarkdown += `| ${projectDetails.name} | ${projectDetails.project_id} | \`${milestoneBar}\` ${milestonePercentComplete}% | \`${fundBar}\` ${fundPercentComplete}% |\n`;
+                // Add project row with fund prefix
+                summaryMarkdown += `| F${fundNumber} - ${projectDetails.name} | ${projectDetails.project_id} | \`${milestoneBar}\` ${milestonePercentComplete}% | \`${fundBar}\` ${fundPercentComplete}% |\n`;
             });
         });
 
