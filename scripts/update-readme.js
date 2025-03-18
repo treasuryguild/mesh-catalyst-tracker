@@ -327,7 +327,30 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
         }
     }
 
-    // Add summary table at the top
+    // Calculate total milestones and completed milestones across all projects
+    let totalMilestones = 0;
+    let totalCompletedMilestones = 0;
+
+    Object.values(projectsByFund).flat().forEach(project => {
+        totalMilestones += project.projectDetails.milestones_qty;
+        totalCompletedMilestones += project.milestonesCompleted;
+    });
+
+    // Generate overall milestone progress bar
+    const overallMilestonePercentComplete = Math.round((totalCompletedMilestones / totalMilestones) * 100);
+    const overallMilestoneFilled = Math.round(overallMilestonePercentComplete / 5);
+    const overallMilestoneEmpty = 20 - overallMilestoneFilled;
+    const overallMilestoneBar = '█'.repeat(overallMilestoneFilled) + '·'.repeat(overallMilestoneEmpty);
+
+    // Add overall milestone progress to the markdown
+    markdownContent += `## Overall Milestone Progress
+    
+Total milestones completed: ${totalCompletedMilestones}/${totalMilestones} (${overallMilestonePercentComplete}%)
+
+\`${overallMilestoneBar}\` ${overallMilestonePercentComplete}%
+
+`;
+
     markdownContent += generateSummaryTable(Object.values(projectsByFund));
 
     // Add project tables grouped by fund
