@@ -316,10 +316,14 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
     // Calculate total milestones and completed milestones across all projects
     let totalMilestones = 0;
     let totalCompletedMilestones = 0;
+    let totalBudget = 0;
+    let totalFundsDistributed = 0;
 
     Object.values(projectsByFund).flat().forEach(project => {
         totalMilestones += project.projectDetails.milestones_qty;
         totalCompletedMilestones += project.milestonesCompleted;
+        totalBudget += project.projectDetails.budget || 0;
+        totalFundsDistributed += project.projectDetails.funds_distributed || 0;
     });
 
     // Generate overall milestone progress bar
@@ -328,10 +332,22 @@ List of funded proposals from MeshJS at Cardano's Project Catalyst.
     const overallMilestoneEmpty = 20 - overallMilestoneFilled;
     const overallMilestoneBar = '█'.repeat(overallMilestoneFilled) + '·'.repeat(overallMilestoneEmpty);
 
-    // Add overall milestone progress to the markdown
-    markdownContent += `Total milestones completed: ${totalCompletedMilestones}/${totalMilestones} (${overallMilestonePercentComplete}%)
+    // Generate overall funding progress bar
+    const overallFundingPercentComplete = Math.round((totalFundsDistributed / totalBudget) * 100);
+    const overallFundingFilled = Math.round(overallFundingPercentComplete / 5);
+    const overallFundingEmpty = 20 - overallFundingFilled;
+    const overallFundingBar = '█'.repeat(overallFundingFilled) + '·'.repeat(overallFundingEmpty);
 
-\`${overallMilestoneBar}\` ${overallMilestonePercentComplete}%
+    // Format currency values with commas
+    const formattedTotalBudget = new Intl.NumberFormat('en-US').format(totalBudget);
+    const formattedTotalFundsDistributed = new Intl.NumberFormat('en-US').format(totalFundsDistributed);
+
+    // Add overall progress to the markdown with progress bars in a table side by side
+    markdownContent += `## Overall Progress
+
+| Milestones | Funding |
+|:-----------|:--------|
+| Total completed: ${totalCompletedMilestones}/${totalMilestones} (${overallMilestonePercentComplete}%)<br>\`${overallMilestoneBar}\` ${overallMilestonePercentComplete}% | Total distributed: ADA ${formattedTotalFundsDistributed}/${formattedTotalBudget} (${overallFundingPercentComplete}%)<br>\`${overallFundingBar}\` ${overallFundingPercentComplete}% |
 
 `;
 
