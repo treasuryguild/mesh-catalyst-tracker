@@ -3,11 +3,13 @@
 List of funded proposals from MeshJS at Cardano's Project Catalyst.
 
 > **Data Source**: Real data from Catalyst
-> **Last Updated**: March 18, 2025 at 09:21 AM UTC
+> **Last Updated**: March 19, 2025 at 03:56 AM UTC
 
-Total milestones completed: 25/50 (50%)
+## Overall Progress
 
-`██████████··········` 50%
+| Milestones | Funding |
+|:-----------|:--------|
+| Total completed: 25/50 (50%)<br>`██████████··········` 50% | Total distributed: ADA 1,075,997/2,018,429 (53%)<br>`███████████·········` 53% |
 
 ## Overview of All Proposals
 
